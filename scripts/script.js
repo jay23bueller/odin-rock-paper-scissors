@@ -1,25 +1,32 @@
 const choices = ["rock", "paper", "scissors"];
 
+let playerScore = 0;
+let computerScore = 0;
+
+const rockButton = document.querySelector("#rock-button");
+rockButton.addEventListener("click", () => {playRound("rock", getComputerChoice());});
+
+const paperButton = document.querySelector("#paper-button");
+paperButton.addEventListener("click", () => {playRound("paper", getComputerChoice());});
+
+const scissorsButton = document.querySelector("#scissors-button");
+scissorsButton.addEventListener("click",() => {playRound("scissors", getComputerChoice());});
+
+
 //Randomly choose between rock, paper,and scissors
 function getComputerChoice() {
     return choices[Math.floor(Math.random()*3)];
 }
 
-//Get player input and validate it
-function getPlayerChoice() {
-    let choice;
-
-    do {
-        choice = window.prompt("Type in one of the following options: rock, paper, scissors").toLowerCase();
-        if(choices.findIndex(val => val === choice) === -1)
-            console.log("Please enter a valid option");
-    } while(choices.findIndex(val => val === choice) === -1)
-
-    return choice;
-}
 
 //Play a round
 function playRound(playerChoice, computerChoice) {
+    if(playerScore == 5 || computerScore == 5) return;
+    
+    const playerScoreElement = document.querySelector("#player-score");
+    const roundPromptElement = document.querySelector("#round-prompt");
+    const computerScoreElement = document.querySelector("#computer-score");
+    
     let output;
     let playerWon = false;
     let computerWon = false;
@@ -30,29 +37,16 @@ function playRound(playerChoice, computerChoice) {
     } else if((playerChoice == "rock" && computerChoice == "paper") || (playerChoice == "paper" && computerChoice == "scissors") || (playerChoice == "scissor" && computerChoice == "rock")) {
         output = `You Lose! ${computerChoice} beats ${playerChoice}!`;
         computerWon = true;
+        computerScore++;
     } else {
         output = `You Win! ${playerChoice} beats ${computerChoice}!`;
         playerWon = true;
+        playerScore++;
     }
 
-   return {output,playerWon,computerWon};
+    playerScoreElement.textContent = playerScore;
+    computerScoreElement.textContent = computerScore;
+    roundPromptElement.textContent = output;
+   
 }
 
-// Play a game, best of 5
-function playGame() {
-    let playerWins = 0;
-    let computerWins = 0;
-
-    for(let i = 0; i < 5; i++) {
-        let results = playRound(getPlayerChoice(), getComputerChoice());
-        console.log(results.output);
-        if(results.playerWon) playerWins++;
-        if(results.computerWon) computerWins++;
-    }
-
-    if(playerWins === computerWins) console.log("Draw!");
-    else if(playerWins > computerWins) console.log("Player won!");
-    else console.log("Computer won!");
-}
-
-playGame();
